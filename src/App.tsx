@@ -5,6 +5,15 @@ import Theme from "./styles/Theme";
 import patternCircles from "./assets/pattern-circles.svg";
 import Pricing from "./components/Pricing";
 import { RecoilRoot } from "recoil";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 120000,
+    },
+  },
+});
 
 const App: FC = () => {
   return (
@@ -15,7 +24,9 @@ const App: FC = () => {
           <Title>Simple, traffic-based pricing</Title>
           <p>Sign-up for our 30-day trial. No credit card required.</p>
         </StyledContainer>
+        <QueryClientProvider client={queryClient}>
           <Pricing />
+        </QueryClientProvider>
       </Theme>
     </RecoilRoot>
   );

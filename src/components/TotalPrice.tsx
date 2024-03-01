@@ -5,12 +5,19 @@ import { FC } from "react";
 import pageViewsState from "../state/atoms/pageViewsState";
 import yearlyPriceState from "../state/atoms/yearlyPriceState";
 import yearlyPriceCalculator from "../utilities/yearlyPriceCalculator";
+import useCROPrice from "../hooks/useCROPrice";
+import Loader from "./Loader";
 
 const TotalPrice: FC = () => {
   const pageViews = useRecoilValue(pageViewsState);
   const isYearly = useRecoilValue(yearlyPriceState);
   const basePrice = priceDictionary[pageViews];
   const totalPrice = isYearly ? yearlyPriceCalculator(basePrice) : basePrice;
+  const [convertedPrice, status] = useCROPrice(
+    totalPrice,
+    "crypto-com-chain",
+    "usd",
+  );
 
   const suffix = isYearly ? " / year" : " / month";
 
@@ -21,6 +28,21 @@ const TotalPrice: FC = () => {
           <PriceText>${totalPrice}.00</PriceText>
           {suffix}
         </PriceTextWrapper>
+        {status === "pending" ? (
+          <Loader />
+        ) : (
+          <CROTextWrapper>
+            {status === "success" ? (
+              convertedPrice !== 0 && (
+                <>
+                  or ~{convertedPrice}CRO {suffix}
+                </>
+              )
+            ) : (
+              <>Error fetching data...</>
+            )}
+          </CROTextWrapper>
+        )}
       </WrapperText>
     </Container>
   );
@@ -41,6 +63,11 @@ const PriceText = styled.span`
   color: black;
   font-size: 2rem;
   padding-right: 0.5rem;
+`;
+
+const CROTextWrapper = styled.span`
+  font-size: 11.5px;
+  text-align: right;
 `;
 
 const PriceTextWrapper = styled.div`
