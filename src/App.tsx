@@ -3,16 +3,21 @@ import styled from "styled-components";
 import GlobalStyles from "./styles/GlobalStyle";
 import Theme from "./styles/Theme";
 import patternCircles from "./assets/pattern-circles.svg";
+import Pricing from "./components/Pricing";
+import { RecoilRoot } from "recoil";
 
 const App: FC = () => {
   return (
+    <RecoilRoot>
       <Theme>
         <GlobalStyles />
         <StyledContainer>
           <Title>Simple, traffic-based pricing</Title>
           <p>Sign-up for our 30-day trial. No credit card required.</p>
         </StyledContainer>
+          <Pricing />
       </Theme>
+    </RecoilRoot>
   );
 };
 
