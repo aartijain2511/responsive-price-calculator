@@ -1,9 +1,9 @@
-import React from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import ToggleButton from "./ToggleButton";
 import { theme } from "../styles/Theme";
 
-const PricePlan: React.FC = () => {
+const PricePlan: FC = () => {
   return (
     <Container>
       <Text>Monthly Billing</Text>

@@ -1,4 +1,4 @@
-import { cleanup, render, renderHook, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import TotalPrice from "../components/TotalPrice";
 import { RecoilRoot } from "recoil";
 import yearlyPriceCalculator from "../utilities/yearlyPriceCalculator";
