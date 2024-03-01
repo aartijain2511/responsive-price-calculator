@@ -50,3 +50,4 @@ The designs for this project are provided in JPG static format.
 - Styled-components for styling
 - Jest for testing
 - RecoilJS for state management
+- React Query for data-fetching
