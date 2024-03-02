@@ -9,15 +9,13 @@ import useCROPrice from "../hooks/useCROPrice";
 import Loader from "./Loader";
 
 const TotalPrice: FC = () => {
+  const CRYPTO = "crypto-com-chain";
+  const CURRENCY = "usd";
   const pageViews = useRecoilValue(pageViewsState);
   const isYearly = useRecoilValue(yearlyPriceState);
   const basePrice = priceDictionary[pageViews];
   const totalPrice = isYearly ? yearlyPriceCalculator(basePrice) : basePrice;
-  const [convertedPrice, status] = useCROPrice(
-    totalPrice,
-    "crypto-com-chain",
-    "usd",
-  );
+  const [convertedPrice, status] = useCROPrice(totalPrice, CRYPTO, CURRENCY);
 
   const suffix = isYearly ? " / year" : " / month";
 
@@ -35,7 +33,7 @@ const TotalPrice: FC = () => {
             {status === "success" ? (
               convertedPrice !== 0 && (
                 <>
-                  or ~{convertedPrice}CRO {suffix}
+                  or ~{convertedPrice} CRO {suffix}
                 </>
               )
             ) : (

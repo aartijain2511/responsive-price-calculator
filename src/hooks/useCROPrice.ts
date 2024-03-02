@@ -1,6 +1,8 @@
 import { QueryStatus, useQuery } from "@tanstack/react-query";
 
 const useCROPrice = (price: number, crypto: string, currency: string) => {
+  let convertedPrice = 0;
+
   const fetchConvertedPrice = async (): Promise<number> => {
     // Get the current price of 1 CRO to USD
     const res = await fetch(
@@ -8,24 +10,24 @@ const useCROPrice = (price: number, crypto: string, currency: string) => {
     );
 
     if (!res.ok) {
-      throw new Error(`Unable to get conversion!`);
+      throw new Error("Unable to get conversion!");
     }
 
     let result = await res.json();
-    let unitPrice = result["crypto-com-chain"].usd;
-
-    // calculate total from unit price
-    let convertedPrice = Math.round(price / unitPrice);
-
-    return convertedPrice;
+    return result["crypto-com-chain"].usd;
   };
 
   const results = useQuery({
-    queryKey: ["convertedPrice", price],
+    queryKey: ["convertedPrice"],
     queryFn: () => fetchConvertedPrice(),
   });
 
-  return [results?.data ?? 0, results.status] as [number, QueryStatus];
+  // calculate total from unit price
+  if (results?.data) {
+    convertedPrice = Math.round(price / results.data);
+  }
+
+  return [convertedPrice ?? 0, results.status] as [number, QueryStatus];
 };
 
 export default useCROPrice;

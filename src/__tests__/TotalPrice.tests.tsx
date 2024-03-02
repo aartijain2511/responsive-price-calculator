@@ -70,7 +70,7 @@ describe("TotalPrice Component", () => {
       </RecoilRoot>,
     );
 
-    expect(screen.getByText(/or ~500CRO /i)).toBeInTheDocument();
+    expect(screen.getByText(/or ~500 CRO /i)).toBeInTheDocument();
   });
 
   it("does not render CROTextWrapper when useCROPrice status is error", () => {

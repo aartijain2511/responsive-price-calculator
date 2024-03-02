@@ -2,18 +2,24 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import useCROPrice from "../hooks/useCROPrice";
 
+const CRYPTO = "crypto-com-chain";
+const CURRENCY = "usd";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Infinity,
+      staleTime: 60000,
       retry: false,
     },
   },
 });
 
 describe("Test useCROPrice hook", () => {
+  afterEach(() => {
+    queryClient.clear();
+  });
+
   test("returns 0 when no price", async () => {
-    const { result } = renderHook(() => useCROPrice(0), {
+    const { result } = renderHook(() => useCROPrice(0, CRYPTO, CURRENCY), {
       wrapper: ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
@@ -28,12 +34,12 @@ describe("Test useCROPrice hook", () => {
   });
 
   it("fetches the converted price correctly", async () => {
-    jest.spyOn(global, "fetch").mockResolvedValue({
+    jest.spyOn(global, "fetch").mockResolvedValueOnce({
       ok: true,
       json: async () => ({ "crypto-com-chain": { usd: 0.2 } }),
     } as Response);
 
-    const { result } = renderHook(() => useCROPrice(100), {
+    const { result } = renderHook(() => useCROPrice(100, CRYPTO, CURRENCY), {
       wrapper: ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
@@ -54,7 +60,7 @@ describe("Test useCROPrice hook", () => {
       .spyOn(global, "fetch")
       .mockRejectedValueOnce(new Error("Network error"));
 
-    const { result } = renderHook(() => useCROPrice(300), {
+    const { result } = renderHook(() => useCROPrice(300, CRYPTO, CURRENCY), {
       wrapper: ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
@@ -64,7 +70,5 @@ describe("Test useCROPrice hook", () => {
 
     await waitFor(() => expect(result.current[0]).toBe(0));
     await waitFor(() => expect(result.current[1]).toBe("error"));
-
-    jest.restoreAllMocks();
   });
 });
